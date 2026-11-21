@@ -1,5 +1,9 @@
 package com.nocteln.app.ui.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -7,13 +11,12 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.nocteln.app.ui.Screens.HomeScreen
-import com.nocteln.app.ui.Screens.SettingsScreen
-import com.nocteln.app.ui.Screens.ShopScreen
+import com.nocteln.app.ui.screens.HomeScreen
+import com.nocteln.app.ui.screens.SettingsScreen
+import com.nocteln.app.ui.screens.ShopScreen
 
 
 enum class NavScreens(val label: String, val icon: ImageVector)
@@ -31,7 +34,11 @@ fun AppNavHost(
     NavHost(
         navController = navController,
         startDestination = NavScreens.Home.name,
-        modifier = modifier
+        modifier = modifier,
+        enterTransition = {
+            fadeIn(tween(210, delayMillis = 90)) + scaleIn(tween(210, delayMillis = 90), initialScale = 0.92f)
+        },
+        exitTransition = { fadeOut(tween(90)) }
     )
     {
         composable (route = NavScreens.Home.name)

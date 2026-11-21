@@ -1,10 +1,10 @@
-package com.nocteln.app.ui.Screens
+package com.nocteln.app.ui.screens
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
-    Text(text = "Home")
+fun SettingsScreen(modifier: Modifier = Modifier) {
+    Text(text = "settings")
 }
