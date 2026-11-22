@@ -22,17 +22,19 @@ import com.nocteln.app.ui.home.HomeScreen
 import com.nocteln.app.ui.home.HomeViewModel
 import com.nocteln.app.ui.settings.SettingsScreen
 import com.nocteln.app.ui.shop.ShopScreen
+import com.nocteln.app.ui.stats.StatsScreen
 import kotlin.math.min
 
 
-enum class NavScreens(val label: String, val icon: ImageVector)
+enum class NavScreens(val label: String, val icon: ImageVector?)
 {
     Shop("Shop", Icons.Default.ShoppingCart),
     Home("Home", Icons.Default.Home),
     Settings("Settings", Icons.Default.Settings),
+    EndSession("End Session", null),
+    Stats("Statistics", null)
 }
 
-const val END_SESSION_ROUTE = "end_session"
 
 @Composable
 fun AppNavHost(
@@ -56,9 +58,12 @@ fun AppNavHost(
             HomeScreen(
                viewModel = sessionViewModel,
                 onSessionEnded = {
-                    navController.navigate(END_SESSION_ROUTE)
+                    navController.navigate(NavScreens.EndSession.name)
                     sessionViewModel.resetSession()
-                }
+                },
+                onOpenSettings = { navController.navigate(NavScreens.Settings.name)},
+                onOpenShop = { navController.navigate(NavScreens.Shop.name)},
+                onOpenStats = { navController.navigate(NavScreens.Stats.name)}
             )
         }
 
@@ -72,7 +77,11 @@ fun AppNavHost(
             ShopScreen()
         }
 
-        composable (route = END_SESSION_ROUTE)
+        composable (route = NavScreens.Stats.name) {
+            StatsScreen()
+        }
+
+        composable (route = NavScreens.EndSession.name)
         {
             EndSessionScreen(
                 viewModel = sessionViewModel,

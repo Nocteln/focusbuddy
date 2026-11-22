@@ -29,26 +29,6 @@ fun PlantFocusApp(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = {
-            ShortNavigationBar {
-                NavScreens.entries.forEach { screen ->
-                    ShortNavigationBarItem(
-                        selected = currentRoute == screen.name,
-                        onClick = {
-                            navController.navigate(screen.name) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        icon = { Icon(screen.icon, contentDescription = screen.label) },
-                        label = { Text(screen.label) }
-                    )
-                }
-            }
-        }
     ) { innerPadding ->
         AppNavHost(navController = navController,
             modifier = Modifier.padding(innerPadding))

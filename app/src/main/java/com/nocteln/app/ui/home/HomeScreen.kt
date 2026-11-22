@@ -9,18 +9,27 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,7 +49,12 @@ private fun formatTime(seconds: Long): String {
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onSessionEnded: () -> Unit,
-    viewModel: HomeViewModel
+    onOpenSettings: () -> Unit,
+    onOpenStats: () -> Unit,
+    onOpenShop: () -> Unit,
+    viewModel: HomeViewModel,
+    seeds: Int = 0,        // à remplacer par la vraie valeur (Room/DataStore) plus tard
+    streakDays: Int = 0
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -57,8 +71,86 @@ fun HomeScreen(
         restartSession = { viewModel.restartSession() },
         pauseSession = { viewModel.pauseSession() },
         stopSession = { viewModel.stopSession() },
+        seeds = seeds,
+        streakDays = streakDays,
+        onOpenSettings = onOpenSettings,
+        onOpenStats = onOpenStats,
+        onOpenShop = onOpenShop,
         modifier = modifier
     )
+}
+
+/**
+ * Barre du haut : réglages à gauche, série (→ stats) au centre, solde de graines (→ boutique) à droite.
+ * Les 3 zones ont le même poids pour que la série reste centrée.
+ */
+@Composable
+private fun HomeTopBar(
+    seeds: Int,
+    streakDays: Int,
+    onOpenSettings: () -> Unit,
+    onOpenStats: () -> Unit,
+    onOpenShop: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Gauche
+        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+            IconButton(onClick = onOpenSettings) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "Réglages",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+
+        // Centre : série de jours → statistiques
+        Pill(
+            text = "🔥 $streakDays j",
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            onClick = onOpenStats
+        )
+
+        // Droite : solde de graines → boutique
+        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
+            Pill(
+                text = "$seeds 🌱",
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                onClick = onOpenShop
+            )
+        }
+    }
+}
+
+/** Pastille cliquable (48 dp de haut = taille tactile minimale recommandée). */
+@Composable
+private fun Pill(
+    text: String,
+    containerColor: Color,
+    contentColor: Color,
+    onClick: () -> Unit
+) {
+    Surface(
+        onClick = onClick,
+        shape = CircleShape,
+        color = containerColor,
+        contentColor = contentColor
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge,
+            modifier = Modifier
+                .heightIn(min = 48.dp)
+                .padding(horizontal = 16.dp)
+                .wrapContentHeight(Alignment.CenterVertically)
+        )
+    }
 }
 
 @Composable
@@ -69,6 +161,11 @@ fun SessionTimer(
     restartSession: () -> Unit,
     pauseSession: () -> Unit,
     stopSession: () -> Unit,
+    seeds: Int,
+    streakDays: Int,
+    onOpenSettings: () -> Unit,
+    onOpenStats: () -> Unit,
+    onOpenShop: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Texte d'état sous le chrono
@@ -84,11 +181,12 @@ fun SessionTimer(
             .padding(horizontal = 24.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Titre de l'écran
-        Text(
-            text = "Focus",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.align(Alignment.Start)
+        HomeTopBar(
+            seeds = seeds,
+            streakDays = streakDays,
+            onOpenSettings = onOpenSettings,
+            onOpenStats = onOpenStats,
+            onOpenShop = onOpenShop
         )
 
         // Espace flexible : centre le cercle et le chrono verticalement
@@ -170,7 +268,12 @@ fun HomeScreenPreview() {
     PlantFocusTheme {
         HomeScreen(
             onSessionEnded = {},
-            viewModel = viewModel()
+            onOpenSettings = {},
+            onOpenStats = {},
+            onOpenShop = {},
+            viewModel = viewModel(),
+            seeds = 340,
+            streakDays = 4
         )
     }
 }
