@@ -3,6 +3,7 @@ package com.nocteln.app.ui.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -30,16 +31,25 @@ private fun formatTime(seconds: Long): String {
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel()
-    ) {
+) {
     val uiState by viewModel.uiState.collectAsState()
 
+    Timer(uiState = uiState, viewModel = viewModel)
+}
+
+@Composable
+fun Timer(
+    modifier: Modifier = Modifier,
+    uiState: HomeUiState,
+    viewModel: HomeViewModel
+) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Box(contentAlignment = Alignment.Center) {
             CircularSlider(
                 value = if (uiState.isStarted) uiState.remainingSeconds.toFloat() / (60f * TIMER_MAX_MINUTES) else uiState.minutes / TIMER_MAX_MINUTES.toFloat(),
                 onValueChange = { fraction ->
                     viewModel.onSliderChange(fraction)
-                     },
+                },
                 modifier = Modifier.size(260.dp),
                 enabled = !uiState.isStarted
             )
@@ -51,12 +61,31 @@ fun HomeScreen(
             style = MaterialTheme.typography.displaySmall
         )
 
-        Button(
-            enabled = !uiState.isStarted,
-            onClick = { viewModel.startTimer() }
-        ) {
-            Text("Start session")
+        if (uiState.isStarted) {
+            Row() {
+                Button(
+                    onClick = {
+                        if (uiState.isPaused) viewModel.restartSession() else viewModel.pauseSession()
+                    }
+                ) {
+                    Text(text = if (uiState.isPaused) "resume" else "pause")
+                }
+                Button(
+                    onClick = { viewModel.stopSession() }
+                ) {
+                    Text(text = "Stop")
+                }
+            }
+
+        } else {
+            Button(
+//                    enabled = !uiState.isStarted,
+                onClick = { viewModel.startSession() }
+            ) {
+                Text("Start session")
+            }
         }
+
     }
 }
 
