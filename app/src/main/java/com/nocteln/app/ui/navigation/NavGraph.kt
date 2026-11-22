@@ -14,9 +14,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.nocteln.app.ui.screens.HomeScreen
-import com.nocteln.app.ui.screens.SettingsScreen
-import com.nocteln.app.ui.screens.ShopScreen
+import com.nocteln.app.ui.home.HomeScreen
+import com.nocteln.app.ui.settings.SettingsScreen
+import com.nocteln.app.ui.shop.ShopScreen
 
 
 enum class NavScreens(val label: String, val icon: ImageVector)

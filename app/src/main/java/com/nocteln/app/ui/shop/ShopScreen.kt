@@ -1,4 +1,4 @@
-package com.nocteln.app.ui.screens
+package com.nocteln.app.ui.shop
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
