@@ -13,7 +13,7 @@ import kotlin.time.Duration.Companion.seconds
 
 const val TIMER_MAX_MINUTES = 60
 const val TIMER_STEP_MINUTES = 1
-const val DEFAULT_STARTING_MINUTES = 25
+const val DEFAULT_STARTING_MINUTES = 1
 
 
 class HomeViewModel : ViewModel() {
@@ -28,7 +28,6 @@ class HomeViewModel : ViewModel() {
             currentState.copy(
                 isStarted = false,
                 isPaused = false,
-                minutes = DEFAULT_STARTING_MINUTES,
                 remainingSeconds = 0
             )
         }
@@ -53,7 +52,17 @@ class HomeViewModel : ViewModel() {
                 }
             }
 
-            override fun onFinish() { endSession() }
+            override fun onFinish() {
+                endSession()
+
+                _uiState.update { cur ->
+                    cur.copy(
+                        sessionEnded = true
+                    )
+                }
+
+
+            }
         }
     }
 
@@ -64,7 +73,8 @@ class HomeViewModel : ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(
                 remainingSeconds = currentState.minutes.minutes.inWholeSeconds,
-                isStarted = true
+                isStarted = true,
+                sessionEnded = false
             )
         }
 
@@ -135,6 +145,14 @@ class HomeViewModel : ViewModel() {
         super.onCleared()
 
         timer?.cancel()
+    }
+
+    fun resetSession() {
+        _uiState.update { cur ->
+            cur.copy(
+                sessionEnded = false
+            )
+        }
     }
 
 }

@@ -1,21 +1,30 @@
 package com.nocteln.app.ui.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nocteln.app.R
 import com.nocteln.app.ui.components.CircularSlider
@@ -30,69 +39,138 @@ private fun formatTime(seconds: Long): String {
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = viewModel()
+    onSessionEnded: () -> Unit,
+    viewModel: HomeViewModel
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Timer(uiState = uiState, viewModel = viewModel)
+    LaunchedEffect(uiState.sessionEnded) {
+        if (uiState.sessionEnded) {
+            onSessionEnded()
+        }
+    }
+
+    SessionTimer(
+        uiState = uiState,
+        onSliderChange = { frac -> viewModel.onSliderChange(frac) },
+        startSession = { viewModel.startSession() },
+        restartSession = { viewModel.restartSession() },
+        pauseSession = { viewModel.pauseSession() },
+        stopSession = { viewModel.stopSession() },
+        modifier = modifier
+    )
 }
 
 @Composable
-fun Timer(
-    modifier: Modifier = Modifier,
+fun SessionTimer(
     uiState: HomeUiState,
-    viewModel: HomeViewModel
+    onSliderChange: (Float) -> Unit,
+    startSession: () -> Unit,
+    restartSession: () -> Unit,
+    pauseSession: () -> Unit,
+    stopSession: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+    // Texte d'état sous le chrono
+    val status = when {
+        !uiState.isStarted -> "Glisse le cercle pour choisir la durée"
+        uiState.isPaused -> "En pause"
+        else -> "Reste concentré, ta plante pousse"
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 24.dp, vertical = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Titre de l'écran
+        Text(
+            text = "Focus",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.align(Alignment.Start)
+        )
+
+        // Espace flexible : centre le cercle et le chrono verticalement
+        Spacer(modifier = Modifier.weight(1f))
+
         Box(contentAlignment = Alignment.Center) {
             CircularSlider(
                 value = if (uiState.isStarted) uiState.remainingSeconds.toFloat() / (60f * TIMER_MAX_MINUTES) else uiState.minutes / TIMER_MAX_MINUTES.toFloat(),
                 onValueChange = { fraction ->
-                    viewModel.onSliderChange(fraction)
+                    onSliderChange(fraction)
                 },
                 modifier = Modifier.size(260.dp),
                 enabled = !uiState.isStarted
             )
-            Image(painterResource(R.drawable.plant), contentDescription = null)
+            Image(
+                painter = painterResource(R.drawable.plant),
+                contentDescription = "Ta plante",
+                modifier = Modifier.size(150.dp)
+            )
         }
 
         Text(
             text = if (uiState.isStarted) formatTime(uiState.remainingSeconds) else "${uiState.minutes} min",
-            style = MaterialTheme.typography.displaySmall
+            // "tnum" : chiffres de largeur égale, le chrono ne bouge plus d'un pixel à l'autre
+            style = MaterialTheme.typography.displayLarge.copy(fontFeatureSettings = "tnum"),
+            modifier = Modifier.padding(top = 24.dp)
+        )
+        Text(
+            text = status,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 8.dp)
         )
 
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Boutons en bas de l'écran
         if (uiState.isStarted) {
-            Row() {
-                Button(
-                    onClick = {
-                        if (uiState.isPaused) viewModel.restartSession() else viewModel.pauseSession()
-                    }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                OutlinedButton(
+                    onClick = { if (uiState.isPaused) restartSession() else pauseSession() },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(56.dp),
+                    shape = RoundedCornerShape(16.dp)
                 ) {
-                    Text(text = if (uiState.isPaused) "resume" else "pause")
+                    Text(if (uiState.isPaused) "Reprendre" else "Pause")
                 }
                 Button(
-                    onClick = { viewModel.stopSession() }
+                    onClick = stopSession,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(56.dp),
+                    shape = RoundedCornerShape(16.dp)
                 ) {
-                    Text(text = "Stop")
+                    Text("Terminer")
                 }
             }
-
         } else {
             Button(
-//                    enabled = !uiState.isStarted,
-                onClick = { viewModel.startSession() }
+                onClick = startSession,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(58.dp),
+                shape = RoundedCornerShape(18.dp)
             ) {
-                Text("Start session")
+                Text("Commencer")
             }
         }
-
     }
 }
 
-@Preview
+@Preview(showSystemUi = true)
 @Composable
 fun HomeScreenPreview() {
     PlantFocusTheme {
-        HomeScreen()
+        HomeScreen(
+            onSessionEnded = {},
+            viewModel = viewModel()
+        )
     }
 }

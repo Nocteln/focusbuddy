@@ -23,8 +23,6 @@ fun PlantFocusApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
-    AppNavHost(navController = navController, modifier)
-
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
 
