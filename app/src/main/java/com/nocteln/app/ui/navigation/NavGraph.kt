@@ -4,6 +4,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -17,6 +18,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.nocteln.app.R
+import com.nocteln.app.ui.AppViewModelProvider
 import com.nocteln.app.ui.home.EndSessionScreen
 import com.nocteln.app.ui.home.HomeScreen
 import com.nocteln.app.ui.home.HomeViewModel
@@ -26,13 +29,13 @@ import com.nocteln.app.ui.stats.StatsScreen
 import kotlin.math.min
 
 
-enum class NavScreens(val label: String, val icon: ImageVector?)
+enum class NavScreens(@StringRes val label: Int, val icon: ImageVector?)
 {
-    Shop("Shop", Icons.Default.ShoppingCart),
-    Home("Home", Icons.Default.Home),
-    Settings("Settings", Icons.Default.Settings),
-    EndSession("End Session", null),
-    Stats("Statistics", null)
+    Shop(R.string.nav_shop, Icons.Default.ShoppingCart),
+    Home(R.string.nav_home, Icons.Default.Home),
+    Settings(R.string.nav_settings, Icons.Default.Settings),
+    EndSession(R.string.nav_end_session, null),
+    Stats(R.string.nav_stats, null)
 }
 
 
@@ -41,7 +44,7 @@ fun AppNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    val sessionViewModel: HomeViewModel = viewModel()
+    val sessionViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
     NavHost(
         navController = navController,

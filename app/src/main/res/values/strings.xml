@@ -1,3 +1,60 @@
 <resources>
-    <string name="app_name">FocusBuddy</string>
+    <string name="app_name" translatable="false">FocusBuddy</string>
+
+    <!-- Navigation -->
+    <string name="nav_shop">Shop</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_end_session">End session</string>
+    <string name="nav_stats">Statistics</string>
+
+    <!-- Home -->
+    <string name="home_minutes">%1$d min</string>
+    <string name="home_stay_focused">Stay focused, your buddy is counting on you</string>
+    <string name="home_give_up">Give up</string>
+    <string name="home_give_up_warning">Giving up lowers your buddy\'s mood</string>
+    <string name="home_start_session">Start a session</string>
+    <string name="home_settings">Settings</string>
+    <string name="home_streak">🔥 %1$d d</string>
+    <string name="home_coins">%1$d 🪙</string>
+    <string name="home_buddy_description">Your buddy</string>
+    <string name="home_mood_label">Mood</string>
+    <string name="home_health_percent">%1$d %%</string>
+
+    <!-- Buddy moods: title -->
+    <string name="mood_title_thriving">Your buddy is thriving</string>
+    <string name="mood_title_happy">Your buddy is happy</string>
+    <string name="mood_title_neutral">Your buddy is a little bored</string>
+    <string name="mood_title_sad">Your buddy is sad</string>
+    <string name="mood_title_neglected">Your buddy feels neglected</string>
+
+    <!-- Buddy moods: sentence -->
+    <string name="mood_line_thriving">Keep it up, it loves seeing you focused.</string>
+    <string name="mood_line_happy">One more session and it will be thriving.</string>
+    <string name="mood_line_neutral">It wishes you spent less time on your phone.</string>
+    <string name="mood_line_sad">Finishing a session would cheer it up.</string>
+    <string name="mood_line_neglected">Come back to it, it\'s not too late.</string>
+
+    <!-- End session -->
+    <string name="end_session_badge">Session complete · %1$d min</string>
+    <string name="end_session_title">Great harvest!</string>
+    <string name="end_session_buddy_description">Your thriving plant</string>
+    <string name="end_session_total">+%1$d</string>
+    <string name="end_session_seeds">seeds</string>
+    <plurals name="end_session_focus_minutes">
+        <item quantity="one">%1$d minute of focus</item>
+        <item quantity="other">%1$d minutes of focus</item>
+    </plurals>
+    <string name="end_session_healthy_plant">Plant in full health</string>
+    <plurals name="end_session_streak">
+        <item quantity="one">%1$d day in a row, keep it up.</item>
+        <item quantity="other">%1$d days in a row, keep it up.</item>
+    </plurals>
+    <string name="end_session_harvest">Harvest</string>
+    <string name="end_session_new_session">New session</string>
+
+    <!-- Placeholder screens -->
+    <string name="shop_title">Shop</string>
+    <string name="settings_title">Settings</string>
+    <string name="stats_title">Statistics</string>
 </resources>

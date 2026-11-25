@@ -2,10 +2,16 @@ package com.nocteln.app.ui.home
 
 import android.os.CountDownTimer
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.nocteln.app.data.buddy.Buddy
+import com.nocteln.app.data.buddy.BuddyRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -15,13 +21,24 @@ const val TIMER_MAX_MINUTES = 60
 const val TIMER_STEP_MINUTES = 1
 const val DEFAULT_STARTING_MINUTES = 1
 
+const val GIVE_UP_PENALTY = 15
+const val END_SESSION_HEALTH_BONUS = 10
 
-class HomeViewModel : ViewModel() {
+
+class HomeViewModel(
+    private val buddyRepository: BuddyRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     private var timer: CountDownTimer? = null
+
+    val buddy: StateFlow<Buddy> = buddyRepository.buddy.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = Buddy()
+    )
 
     private fun endSession() {
         _uiState.update { currentState ->
@@ -58,6 +75,10 @@ class HomeViewModel : ViewModel() {
                     cur.copy(
                         sessionEnded = true
                     )
+                }
+
+                viewModelScope.launch {
+                    buddyRepository.changeHealth(END_SESSION_HEALTH_BONUS)
                 }
 
 
@@ -101,16 +122,10 @@ class HomeViewModel : ViewModel() {
         if (!uiState.value.isStarted)
             return
 
-        // TODO: penaliser
+                viewModelScope.launch {
+                    buddyRepository.changeHealth(-GIVE_UP_PENALTY)
+                }
         endSession()
-    }
-    
-    fun stopSession() {
-        if (!uiState.value.isStarted)
-            return
-        // TODO: add error notification
-
-       endSession()
     }
 
     override fun onCleared() {

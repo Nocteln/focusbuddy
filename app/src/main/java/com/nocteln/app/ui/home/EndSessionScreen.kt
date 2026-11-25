@@ -31,6 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -61,7 +63,7 @@ fun EndSessionScreen(
             color = MaterialTheme.colorScheme.primaryContainer
         ) {
             Text(
-                text = "Session terminée · ${uiState.minutes} min",
+                text = stringResource(R.string.end_session_badge, uiState.minutes),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
@@ -69,7 +71,7 @@ fun EndSessionScreen(
         }
 
         Text(
-            text = "Belle récolte !",
+            text = stringResource(R.string.end_session_title),
             style = MaterialTheme.typography.headlineLarge,
             modifier = Modifier.padding(top = 14.dp)
         )
@@ -85,7 +87,7 @@ fun EndSessionScreen(
         ) {
             Image(
                 painter = painterResource(R.drawable.plant),
-                contentDescription = "Ta plante épanouie",
+                contentDescription = stringResource(R.string.end_session_buddy_description),
                 modifier = Modifier.size(180.dp)
             )
         }
@@ -106,24 +108,30 @@ fun EndSessionScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "+${focusSeeds + healthSeeds}",
+                        text = stringResource(R.string.end_session_total, focusSeeds + healthSeeds),
                         style = MaterialTheme.typography.headlineLarge
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "graines",
+                        text = stringResource(R.string.end_session_seeds),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-                StatRow(label = "${uiState.minutes} minutes de focus", value = "+$focusSeeds")
-                StatRow(label = "Plante en pleine santé", value = "+$healthSeeds")
+                StatRow(
+                    label = pluralStringResource(R.plurals.end_session_focus_minutes, uiState.minutes, uiState.minutes),
+                    value = stringResource(R.string.end_session_total, focusSeeds)
+                )
+                StatRow(
+                    label = stringResource(R.string.end_session_healthy_plant),
+                    value = stringResource(R.string.end_session_total, healthSeeds)
+                )
             }
         }
 
         Text(
-            text = "$streakDays jours d'affilée, continue comme ça.",
+            text = pluralStringResource(R.plurals.end_session_streak, streakDays, streakDays),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 14.dp)
@@ -139,7 +147,7 @@ fun EndSessionScreen(
                 .height(58.dp),
             shape = RoundedCornerShape(18.dp)
         ) {
-            Text("Récolter")
+            Text(stringResource(R.string.end_session_harvest))
         }
         TextButton(
             onClick = onNewSession,
@@ -147,7 +155,7 @@ fun EndSessionScreen(
                 .fillMaxWidth()
                 .height(48.dp)
         ) {
-            Text("Nouvelle session")
+            Text(stringResource(R.string.end_session_new_session))
         }
     }
 }
