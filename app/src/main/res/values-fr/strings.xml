@@ -1,0 +1,60 @@
+<resources>
+    <!-- Navigation -->
+    <string name="nav_shop">Boutique</string>
+    <string name="nav_home">Accueil</string>
+    <string name="nav_settings">Paramètres</string>
+    <string name="nav_end_session">Fin de session</string>
+    <string name="nav_stats">Statistiques</string>
+
+    <!-- Home -->
+    <string name="home_minutes">%1$d min</string>
+    <string name="home_stay_focused">Reste concentré, ton buddy compte sur toi</string>
+    <string name="home_give_up">Abandonner</string>
+    <string name="home_give_up_warning">Abandonner fait baisser le moral de ton buddy</string>
+    <string name="home_start_session">Lancer une session</string>
+    <string name="home_settings">Paramètres</string>
+    <string name="home_streak">🔥 %1$d j</string>
+    <string name="home_coins">%1$d 🪙</string>
+    <string name="home_buddy_description">Ton buddy</string>
+    <string name="home_mood_label">Humeur</string>
+    <string name="home_health_percent">%1$d %%</string>
+
+    <!-- Buddy moods: title -->
+    <string name="mood_title_thriving">Ton buddy s\'épanouit</string>
+    <string name="mood_title_happy">Ton buddy est content</string>
+    <string name="mood_title_neutral">Ton buddy s\'ennuie un peu</string>
+    <string name="mood_title_sad">Ton buddy est triste</string>
+    <string name="mood_title_neglected">Ton buddy se sent délaissé</string>
+
+    <!-- Buddy moods: sentence -->
+    <string name="mood_line_thriving">Continue, il adore te voir concentré.</string>
+    <string name="mood_line_happy">Encore une session et il sera épanoui.</string>
+    <string name="mood_line_neutral">Il aimerait que tu passes moins de temps sur ton téléphone.</string>
+    <string name="mood_line_sad">Terminer une session lui remonterait le moral.</string>
+    <string name="mood_line_neglected">Reviens vers lui, il n\'est pas trop tard.</string>
+
+    <!-- End session -->
+    <string name="end_session_badge">Session terminée · %1$d min</string>
+    <string name="end_session_title">Belle récolte !</string>
+    <string name="end_session_buddy_description">Ta plante épanouie</string>
+    <string name="end_session_total">+%1$d</string>
+    <string name="end_session_seeds">graines</string>
+    <plurals name="end_session_focus_minutes">
+        <item quantity="one">%1$d minute de focus</item>
+        <item quantity="many">%1$d minutes de focus</item>
+        <item quantity="other">%1$d minutes de focus</item>
+    </plurals>
+    <string name="end_session_healthy_plant">Plante en pleine santé</string>
+    <plurals name="end_session_streak">
+        <item quantity="one">%1$d jour d\'affilée, continue comme ça.</item>
+        <item quantity="many">%1$d jours d\'affilée, continue comme ça.</item>
+        <item quantity="other">%1$d jours d\'affilée, continue comme ça.</item>
+    </plurals>
+    <string name="end_session_harvest">Récolter</string>
+    <string name="end_session_new_session">Nouvelle session</string>
+
+    <!-- Placeholder screens -->
+    <string name="shop_title">Boutique</string>
+    <string name="settings_title">Paramètres</string>
+    <string name="stats_title">Statistiques</string>
+</resources>
