@@ -27,7 +27,6 @@ class HomeViewModel : ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(
                 isStarted = false,
-                isPaused = false,
                 remainingSeconds = 0
             )
         }
@@ -98,39 +97,12 @@ class HomeViewModel : ViewModel() {
 
     }
 
-    fun pauseSession() {
-        if (uiState.value.isPaused)
-            return
-        // TODO: add error notification
+    fun giveUpSession() {
         if (!uiState.value.isStarted)
             return
-        // TODO: add error notification
 
-        _uiState.update { currentState ->
-            currentState.copy(
-                isPaused = true
-            )
-        }
-        timer?.cancel()
-        timer = null
-    }
-
-    fun restartSession() {
-        if (!uiState.value.isPaused)
-            return
-            // TODO: add error notification
-        if (!uiState.value.isStarted)
-            return
-        // TODO: add error notification
-
-        _uiState.update { currentState ->
-            currentState.copy(
-                isPaused = false
-            )
-        }
-
-        timer = createTimer(uiState.value.remainingSeconds)
-        timer?.start()
+        // TODO: penaliser
+        endSession()
     }
     
     fun stopSession() {

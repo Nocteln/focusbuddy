@@ -68,9 +68,8 @@ fun HomeScreen(
         uiState = uiState,
         onSliderChange = { frac -> viewModel.onSliderChange(frac) },
         startSession = { viewModel.startSession() },
-        restartSession = { viewModel.restartSession() },
-        pauseSession = { viewModel.pauseSession() },
         stopSession = { viewModel.stopSession() },
+        giveUpSession = { viewModel.giveUpSession() },
         seeds = seeds,
         streakDays = streakDays,
         onOpenSettings = onOpenSettings,
@@ -158,8 +157,7 @@ fun SessionTimer(
     uiState: HomeUiState,
     onSliderChange: (Float) -> Unit,
     startSession: () -> Unit,
-    restartSession: () -> Unit,
-    pauseSession: () -> Unit,
+    giveUpSession: () -> Unit,
     stopSession: () -> Unit,
     seeds: Int,
     streakDays: Int,
@@ -171,7 +169,6 @@ fun SessionTimer(
     // Texte d'état sous le chrono
     val status = when {
         !uiState.isStarted -> "Glisse le cercle pour choisir la durée"
-        uiState.isPaused -> "En pause"
         else -> "Reste concentré, ta plante pousse"
     }
 
@@ -225,27 +222,15 @@ fun SessionTimer(
 
         // Boutons en bas de l'écran
         if (uiState.isStarted) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
+            if (uiState.isStarted) {
                 OutlinedButton(
-                    onClick = { if (uiState.isPaused) restartSession() else pauseSession() },
+                    onClick = giveUpSession,
                     modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp),
-                    shape = RoundedCornerShape(16.dp)
+                        .fillMaxWidth()
+                        .height(58.dp),
+                    shape = RoundedCornerShape(18.dp)
                 ) {
-                    Text(if (uiState.isPaused) "Reprendre" else "Pause")
-                }
-                Button(
-                    onClick = stopSession,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Text("Terminer")
+                    Text("Abandonner")
                 }
             }
         } else {
