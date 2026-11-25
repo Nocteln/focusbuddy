@@ -1,7 +1,5 @@
 package com.nocteln.app.ui.home
 
-import com.nocteln.app.ui.theme.PlantFocusTheme
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,10 +15,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,27 +30,57 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nocteln.app.R
+import com.nocteln.app.data.buddy.Buddy
+import com.nocteln.app.data.buddy.MAX_BUDDY_HEALTH
+import com.nocteln.app.ui.theme.PlantFocusTheme
+
+// --- Stateful entry point: reads the shared HomeViewModel ---
 
 @Composable
 fun EndSessionScreen(
-    focusSeeds: Int,
-    healthSeeds: Int,
-    streakDays: Int,
-    onHarvest: () -> Unit,
-    onNewSession: () -> Unit,
-    modifier: Modifier = Modifier,
     viewModel: HomeViewModel,
+    coinsEarned: Int,          // TODO: real value once coins exist (WalletRepository)
+    onBackHome: () -> Unit,
+    onNewSession: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val buddy by viewModel.buddy.collectAsStateWithLifecycle()
+
+    EndSessionContent(
+        minutes = uiState.minutes,
+        buddy = buddy,
+        coinsEarned = coinsEarned,
+        healthBonus = END_SESSION_HEALTH_BONUS,
+        onBackHome = onBackHome,
+        onNewSession = onNewSession,
+        modifier = modifier
+    )
+}
+
+// --- Stateless UI: plain values only, so previews work ---
+
+@Composable
+fun EndSessionContent(
+    minutes: Int,
+    buddy: Buddy,
+    coinsEarned: Int,
+    healthBonus: Int,
+    onBackHome: () -> Unit,
+    onNewSession: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -57,30 +88,48 @@ fun EndSessionScreen(
             .padding(horizontal = 24.dp, vertical = 28.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Pastille "Session terminée"
+        // "Session complete" badge
         Surface(
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.primaryContainer
+            color = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
         ) {
-            Text(
-                text = stringResource(R.string.end_session_badge, uiState.minutes),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
-            )
+            Row(
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = stringResource(R.string.end_session_badge, minutes),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            }
         }
 
         Text(
             text = stringResource(R.string.end_session_title),
             style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(top = 14.dp)
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+        Text(
+            text = stringResource(R.string.end_session_subtitle),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 6.dp)
         )
 
-        // Image de la plante dans un cercle
+        // The buddy in its circle, fading with its health like on Home
         Box(
             modifier = Modifier
-                .padding(top = 18.dp)
-                .size(236.dp)
+                .padding(top = 20.dp)
+                .size(220.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primaryContainer),
             contentAlignment = Alignment.Center
@@ -88,70 +137,68 @@ fun EndSessionScreen(
             Image(
                 painter = painterResource(R.drawable.plant),
                 contentDescription = stringResource(R.string.end_session_buddy_description),
-                modifier = Modifier.size(180.dp)
+                modifier = Modifier
+                    .size(160.dp)
+                    .alpha(0.45f + 0.55f * buddy.health / MAX_BUDDY_HEALTH)
             )
         }
 
-        // Carte des graines gagnées
+        // Rewards card
         Card(
             modifier = Modifier
-                .padding(top = 20.dp)
+                .padding(top = 22.dp)
                 .fillMaxWidth(),
+            shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
             )
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = stringResource(R.string.end_session_total, focusSeeds + healthSeeds),
+                        text = stringResource(R.string.end_session_total, coinsEarned),
                         style = MaterialTheme.typography.headlineLarge
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = stringResource(R.string.end_session_seeds),
+                        text = stringResource(R.string.end_session_coins),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                 StatRow(
-                    label = pluralStringResource(R.plurals.end_session_focus_minutes, uiState.minutes, uiState.minutes),
-                    value = stringResource(R.string.end_session_total, focusSeeds)
+                    label = pluralStringResource(R.plurals.end_session_focus_minutes, minutes, minutes),
+                    value = stringResource(R.string.end_session_total, coinsEarned)
                 )
                 StatRow(
-                    label = stringResource(R.string.end_session_healthy_plant),
-                    value = stringResource(R.string.end_session_total, healthSeeds)
+                    label = stringResource(R.string.end_session_mood_bonus),
+                    value = stringResource(R.string.end_session_total, healthBonus),
+                    valueColor = MaterialTheme.colorScheme.primary
                 )
             }
         }
 
-        Text(
-            text = pluralStringResource(R.plurals.end_session_streak, streakDays, streakDays),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 14.dp)
-        )
-
-        // Pousse les boutons tout en bas de l'écran
+        // Pushes the buttons to the bottom of the screen
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            onClick = onHarvest,
+            onClick = onBackHome,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(58.dp),
             shape = RoundedCornerShape(18.dp)
         ) {
-            Text(stringResource(R.string.end_session_harvest))
+            Text(stringResource(R.string.end_session_back_home))
         }
         TextButton(
             onClick = onNewSession,
             modifier = Modifier
+                .padding(top = 6.dp)
                 .fillMaxWidth()
                 .height(48.dp)
         ) {
@@ -160,31 +207,35 @@ fun EndSessionScreen(
     }
 }
 
-// Une ligne "texte à gauche, valeur à droite"
+// A "label on the left, value on the right" row
 @Composable
-private fun StatRow(label: String, value: String) {
+private fun StatRow(
+    label: String,
+    value: String,
+    valueColor: Color = MaterialTheme.colorScheme.onSurface
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(text = label, style = MaterialTheme.typography.bodyLarge)
-        Text(text = value, style = MaterialTheme.typography.titleMedium)
+        Text(text = value, style = MaterialTheme.typography.titleMedium, color = valueColor)
     }
 }
 
 @Preview(showBackground = true, widthDp = 390, heightDp = 844)
 @Composable
-private fun EndSessionScreenPreview() {
+private fun EndSessionPreview() {
     PlantFocusTheme {
-        EndSessionScreen(
-            focusSeeds = 10,
-            healthSeeds = 5,
-            streakDays = 5,
-            onHarvest = {},
-            onNewSession = {},
-            viewModel = viewModel()
+        EndSessionContent(
+            minutes = 45,
+            buddy = Buddy(health = 90),
+            coinsEarned = 45,
+            healthBonus = 10,
+            onBackHome = {},
+            onNewSession = {}
         )
     }
 }

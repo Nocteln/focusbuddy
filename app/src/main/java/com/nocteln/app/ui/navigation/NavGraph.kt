@@ -88,10 +88,8 @@ fun AppNavHost(
         {
             EndSessionScreen(
                 viewModel = sessionViewModel,
-                focusSeeds = 10,
-                healthSeeds = 5,
-                streakDays = 5,
-                onHarvest = { navController.popBackStack(NavScreens.Home.name, inclusive = false) },
+                coinsEarned = 10,
+                onBackHome = { navController.popBackStack(NavScreens.Home.name, inclusive = false) },
                 onNewSession = {
                     sessionViewModel.startSession()
                     navController.popBackStack(NavScreens.Home.name, inclusive = false)

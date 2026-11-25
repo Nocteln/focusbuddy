@@ -37,20 +37,17 @@
 
     <!-- End session -->
     <string name="end_session_badge">Session complete · %1$d min</string>
-    <string name="end_session_title">Great harvest!</string>
-    <string name="end_session_buddy_description">Your thriving plant</string>
+    <string name="end_session_title">Session held!</string>
+    <string name="end_session_subtitle">Your buddy is proud of you.</string>
+    <string name="end_session_buddy_description">Your proud buddy</string>
     <string name="end_session_total">+%1$d</string>
-    <string name="end_session_seeds">seeds</string>
+    <string name="end_session_coins">coins</string>
     <plurals name="end_session_focus_minutes">
         <item quantity="one">%1$d minute of focus</item>
         <item quantity="other">%1$d minutes of focus</item>
     </plurals>
-    <string name="end_session_healthy_plant">Plant in full health</string>
-    <plurals name="end_session_streak">
-        <item quantity="one">%1$d day in a row, keep it up.</item>
-        <item quantity="other">%1$d days in a row, keep it up.</item>
-    </plurals>
-    <string name="end_session_harvest">Harvest</string>
+    <string name="end_session_mood_bonus">Buddy\'s mood</string>
+    <string name="end_session_back_home">Back to my buddy</string>
     <string name="end_session_new_session">New session</string>
 
     <!-- Placeholder screens -->
