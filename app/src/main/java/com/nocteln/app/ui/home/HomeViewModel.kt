@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nocteln.app.data.buddy.Buddy
 import com.nocteln.app.data.buddy.BuddyRepository
+import com.nocteln.app.data.buddy.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,9 +21,6 @@ import kotlin.time.Duration.Companion.seconds
 const val TIMER_MAX_MINUTES = 60
 const val TIMER_STEP_MINUTES = 1
 const val DEFAULT_STARTING_MINUTES = 1
-
-const val GIVE_UP_PENALTY = 15
-const val END_SESSION_HEALTH_BONUS = 10
 
 
 class HomeViewModel(

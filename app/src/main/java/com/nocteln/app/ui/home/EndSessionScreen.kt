@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nocteln.app.R
 import com.nocteln.app.data.buddy.Buddy
+import com.nocteln.app.data.buddy.END_SESSION_HEALTH_BONUS
 import com.nocteln.app.data.buddy.MAX_BUDDY_HEALTH
 import com.nocteln.app.ui.theme.PlantFocusTheme
 
