@@ -72,7 +72,9 @@ fun AppNavHost(
 
         composable (route = NavScreens.Settings.name)
         {
-            SettingsScreen()
+            SettingsScreen(
+                onBack = {navController.navigate(NavScreens.Home.name)}
+            )
         }
 
         composable (route = NavScreens.Shop.name)

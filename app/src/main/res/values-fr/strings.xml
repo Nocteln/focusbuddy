@@ -57,4 +57,27 @@
     <string name="shop_title">Boutique</string>
     <string name="settings_title">Paramètres</string>
     <string name="stats_title">Statistiques</string>
+
+    <!-- Settings -->
+    <string name="settings_back">Retour</string>
+    <string name="settings_section_sessions">Sessions</string>
+    <string name="settings_distracting_apps">Apps distrayantes</string>
+    <plurals name="settings_apps_active">
+        <item quantity="one">%1$d active</item>
+        <item quantity="many">%1$d actives</item>
+        <item quantity="other">%1$d actives</item>
+    </plurals>
+    <string name="settings_default_duration">Durée par défaut</string>
+    <string name="settings_section_notifications">Notifications</string>
+    <string name="settings_notify_session_end">Fin de session</string>
+    <string name="settings_vibrate_on_danger">Vibrer quand ton buddy est en danger</string>
+    <string name="settings_daily_reminder">Rappel quotidien</string>
+    <string name="settings_section_permissions">Permissions</string>
+    <string name="settings_usage_access">Données d\'utilisation</string>
+    <string name="settings_usage_access_description">Pour savoir quelle app est ouverte</string>
+    <string name="settings_overlay">Affichage par-dessus les apps</string>
+    <string name="settings_overlay_description">Pour montrer l\'alerte instantanément</string>
+    <string name="settings_permission_enabled">Activé</string>
+    <string name="settings_permission_enable">Activer</string>
+    <string name="settings_privacy_note">Toutes tes données restent sur ce téléphone.</string>
 </resources>
